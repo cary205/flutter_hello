@@ -15,12 +15,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Startup Name Generator',
-      theme: ThemeData(          // Add the 5 lines from here... 
+      theme: ThemeData(
+        // Add the 5 lines from here...
         appBarTheme: const AppBarTheme(
           backgroundColor: Colors.white,
           foregroundColor: Colors.black,
         ),
-      ),                         // ... to here.
+      ), // ... to here.
       home: const RandomWords(),
       // home: Scaffold(
       //   appBar: AppBar(
@@ -77,6 +78,7 @@ class _RandomWordsState extends State<RandomWords> {
       ), // ...to here.
     );
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -90,43 +92,48 @@ class _RandomWordsState extends State<RandomWords> {
           ),
         ],
       ),
-      body: ListView.builder(
-        padding: const EdgeInsets.all(16.0),
-        itemBuilder: /*1*/ (context, i) {
-          print("##### itemBuilder #####");
-          if (i.isOdd) return const Divider(); /*2*/
+      body: Scrollbar(
+        thumbVisibility: false,
+        child: ListView.builder(
+          padding: const EdgeInsets.all(16.0),
+          itemBuilder: /*1*/ (context, i) {
+            print("##### itemBuilder #####");
+            if (i.isOdd) return const Divider(); /*2*/
 
-          final index = i ~/ 2; /*3*/
-          if (index >= _suggestions.length) {
-            print(">>>>> add 10");
-            _suggestions.addAll(generateWordPairs().take(10)); /*4*/
-          }
+            final index = i ~/ 2; /*3*/
+            if (index >= _suggestions.length) {
+              print(">>>>> add 10");
+              _suggestions.addAll(generateWordPairs().take(10)); /*4*/
+            }
 
-          final alreadySaved = _saved.contains(_suggestions[index]); // NEW
+            final alreadySaved = _saved.contains(_suggestions[index]); // NEW
 
-          return ListTile(
-            title: Text(
-              _suggestions[index].asPascalCase,
-              style: _biggerFont,
-            ),
-            trailing: Icon(
-              // NEW from here ...
-              alreadySaved ? Icons.favorite : Icons.favorite_border,
-              color: alreadySaved ? Colors.red : null,
-              semanticLabel: alreadySaved ? 'Remove from saved' : 'Save',
-            ), // to here.
-            onTap: () {
-              // NEW from here ...
-              setState(() {
-                if (alreadySaved) {
-                  _saved.remove(_suggestions[index]);
-                } else {
-                  _saved.add(_suggestions[index]);
-                }
-              }); // to here.
-            },
-          );
-        },
+            return ListTile(
+              title: Text(
+                // _suggestions[index].asPascalCase + " " + i.toString(),
+                "$index: ${_suggestions[index].asPascalCase}",
+                style: _biggerFont,
+              ),
+              trailing: Icon(
+                // NEW from here ...
+                alreadySaved ? Icons.favorite : Icons.favorite_border,
+                color: alreadySaved ? Colors.red : null,
+                semanticLabel: alreadySaved ? 'Remove from saved' : 'Save',
+              ), // to here.
+              onTap: () {
+                // NEW from here ...
+                setState(() {
+                  if (alreadySaved) {
+                    _saved.remove(_suggestions[index]);
+                  } else {
+                    _saved.add(_suggestions[index]);
+                  }
+                }); // to here.
+              },
+            );
+          },
+          itemCount: 200,
+        ),
       ),
     );
   }
